@@ -13,10 +13,10 @@ namespace Trendit_ProjectAPI.Controllers
     public class VillaAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        public VillaAPIController(ApplicationDbContext db) 
+        public VillaAPIController(ApplicationDbContext db)
         {
-            _db=db;
-        } 
+            _db = db;
+        }
 
 
         [HttpGet]
@@ -51,7 +51,7 @@ namespace Trendit_ProjectAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<VillaDTO> CreateVilla([FromBody] VillaDTO villaDTO)
+        public ActionResult<VillaDTO> CreateVilla([FromBody] VillaCreateDTO villaDTO)
         {
             if (_db.Villas.FirstOrDefault(villa => villa.Name.ToLower() == villaDTO.Name.ToLower()) != null)
             /*here will get the first villa in villastore who s name equal to the one send, if no result it will
@@ -65,15 +65,10 @@ namespace Trendit_ProjectAPI.Controllers
             {
                 return BadRequest(villaDTO);
             }
-            if (villaDTO.Id > 0)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
             Villa model = new()
             {
                 Amenity = villaDTO.Amenity,
                 Details = villaDTO.Details,
-                Id = villaDTO.Id,
                 ImageUrl = villaDTO.ImageUrl,
                 Name = villaDTO.Name,
                 Occupancy = villaDTO.Occupancy,
@@ -83,7 +78,7 @@ namespace Trendit_ProjectAPI.Controllers
             _db.Villas.Add(model);
             _db.SaveChanges();
 
-            return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO);
+            return CreatedAtRoute("GetVilla", new { id = model.Id }, model);
             //the id because the getVilla route needs an id also 
 
         }
@@ -111,7 +106,7 @@ namespace Trendit_ProjectAPI.Controllers
         }
 
         [HttpPut("id", Name = "UpdateVilla")]
-        public IActionResult UpdateVilla(int id, [FromBody] VillaDTO villaDTO)
+        public IActionResult UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
         {
             if (villaDTO == null || id != villaDTO.Id)
             {
@@ -140,14 +135,14 @@ namespace Trendit_ProjectAPI.Controllers
         }
 
         [HttpPatch("id", Name = "UpdatePartialVilla")]
-        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDTO> patchDTO)
+        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
         {
             if (patchDTO == null || id == 0)
             {
                 return BadRequest();
             }
             var villa = _db.Villas.AsNoTracking().FirstOrDefault(villa => villa.Id == id);
-            VillaDTO villaDTO = new()
+            VillaUpdateDTO villaDTO = new()
             {
                 Amenity = villa.Amenity,
                 Details = villa.Details,
