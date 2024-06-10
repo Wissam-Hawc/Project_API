@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Trendit_ProjectAPI.Data;
-using Trendit_ProjectAPI.Logging;
 using Trendit_ProjectAPI.Models;
 using Trendit_ProjectAPI.Models.Dto;
 
@@ -12,24 +11,12 @@ namespace Trendit_ProjectAPI.Controllers
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
-        //private readonly ILogger<VillaAPIController> _logger;
-        private readonly ILogging _logger;
-        //public VillaAPIController(ILogger<VillaAPIController> logger)
-        //{
-        //    _logger = logger;
-        //}
-        public VillaAPIController(ILogging logger)
-        {
-            _logger = logger;
-        }
         [HttpGet]
         // if not specified it will be HttpGet by default 
         [ProducesResponseType(StatusCodes.Status200OK)]
 
         public ActionResult<IEnumerable<VillaDTO>> getVillas()
         {
-            //_logger.LogInformation("Getting Villas");
-            _logger.Log("Getting Villas","");
             return Ok(VillaStore.villaList);
         }
         [HttpGet("id", Name = "GetVilla")]
@@ -41,7 +28,6 @@ namespace Trendit_ProjectAPI.Controllers
         {
             if (id == 0)
             {
-                _logger.Log("Get Villa error with id "+ id,"error");
                 return BadRequest();
             }
             var villa = VillaStore.villaList.FirstOrDefault(villa => villa.Id == id);
