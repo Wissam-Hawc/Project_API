@@ -2,6 +2,7 @@
 //using Serilog.Core;
 
 using Microsoft.EntityFrameworkCore;
+using Trendit_ProjectAPI;
 using Trendit_ProjectAPI.Data;
 using Trendit_ProjectAPI.Logging;
 
@@ -15,12 +16,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    .WriteTo.File("log/villalogs.txt", rollingInterval:RollingInterval.Day).CreateLogger();
 
 //builder.Host.UseSerilog();
-
+//builder for automapping
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<ILogging, Logging>();
+//builder.Services.AddSingleton<ILogging, Logging>();
 
 var app = builder.Build();
 
