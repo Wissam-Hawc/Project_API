@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Trendit_ProjectAPI.Data;
@@ -13,9 +14,11 @@ namespace Trendit_ProjectAPI.Controllers
     public class VillaAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        public VillaAPIController(ApplicationDbContext db)
+        private readonly IMapper _mapper;
+        public VillaAPIController(ApplicationDbContext db,IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
 
 
@@ -25,7 +28,8 @@ namespace Trendit_ProjectAPI.Controllers
 
         public async Task<ActionResult<IEnumerable<VillaDTO>>> getVillas()
         {
-            return Ok(await _db.Villas.ToListAsync());
+            IEnumerable <Villa> villaList= await _db.Villas.ToListAsync();
+            return Ok(_mapper.Map<List<VillaDTO>>(villaList));
         }
         [HttpGet("id", Name = "GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -43,7 +47,8 @@ namespace Trendit_ProjectAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(villa);
+
+            return Ok(_mapper.Map<VillaDTO>(villa));
             //FirstOrDefault is a linq methode to get the first element that match or the default null
         }
 
@@ -51,9 +56,9 @@ namespace Trendit_ProjectAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO villaDTO)
+        public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO createDTO)
         {
-            if (await _db.Villas.FirstOrDefaultAsync(villa => villa.Name.ToLower() == villaDTO.Name.ToLower()) != null)
+            if (await _db.Villas.FirstOrDefaultAsync(villa => villa.Name.ToLower() == createDTO.Name.ToLower()) != null)
             /*here will get the first villa in villastore who s name equal to the one send, if no result it will
             return null so no duplication names 
             */
@@ -61,20 +66,11 @@ namespace Trendit_ProjectAPI.Controllers
                 ModelState.AddModelError("CustomError", "Villa Already Exist");
                 return BadRequest(ModelState);
             }
-            if (villaDTO == null)
+            if (createDTO == null)
             {
-                return BadRequest(villaDTO);
+                return BadRequest(createDTO);
             }
-            Villa model = new()
-            {
-                Amenity = villaDTO.Amenity,
-                Details = villaDTO.Details,
-                ImageUrl = villaDTO.ImageUrl,
-                Name = villaDTO.Name,
-                Occupancy = villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                Sqft = villaDTO.Sqft,
-            };
+            Villa model= _mapper.Map<Villa>(createDTO);
             await _db.Villas.AddAsync(model);
             await _db.SaveChangesAsync();
 
@@ -106,28 +102,13 @@ namespace Trendit_ProjectAPI.Controllers
         }
 
         [HttpPut("id", Name = "UpdateVilla")]
-        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
+        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO updateDTO)
         {
-            if (villaDTO == null || id != villaDTO.Id)
+            if (updateDTO == null || id != updateDTO.Id)
             {
                 return BadRequest();
             }
-            //var villa = _db.Villas.FirstOrDefault(villa => villa.Id == id);
-            //villa.Name = villaDTO.Name;
-            //villa.Sqft = villaDTO.Sqft;
-            //villa.Occupancy = villaDTO.Occupancy;
-
-            Villa model = new()
-            {
-                Amenity = villaDTO.Amenity,
-                Details = villaDTO.Details,
-                Id = villaDTO.Id,
-                ImageUrl = villaDTO.ImageUrl,
-                Name = villaDTO.Name,
-                Occupancy = villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                Sqft = villaDTO.Sqft,
-            };
+            Villa model = _mapper.Map<Villa>(updateDTO);
             _db.Villas.Update(model);
             await _db.SaveChangesAsync();
 
@@ -142,33 +123,13 @@ namespace Trendit_ProjectAPI.Controllers
                 return BadRequest();
             }
             var villa = await _db.Villas.AsNoTracking().FirstOrDefaultAsync(villa => villa.Id == id);
-            VillaUpdateDTO villaDTO = new()
-            {
-                Amenity = villa.Amenity,
-                Details = villa.Details,
-                Id = villa.Id,
-                ImageUrl = villa.ImageUrl,
-                Name = villa.Name,
-                Occupancy = villa.Occupancy,
-                Rate = villa.Rate,
-                Sqft = villa.Sqft,
-            };
+            VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
             if (villa == null)
             {
                 return BadRequest();
             }
             patchDTO.ApplyTo(villaDTO, ModelState);
-            Villa model = new()
-            {
-                Amenity = villaDTO.Amenity,
-                Details = villaDTO.Details,
-                Id = villaDTO.Id,
-                ImageUrl = villaDTO.ImageUrl,
-                Name = villaDTO.Name,
-                Occupancy = villaDTO.Occupancy,
-                Rate = villaDTO.Rate,
-                Sqft = villaDTO.Sqft,
-            };
+            Villa model = _mapper.Map<Villa>(villaDTO);
             _db.Villas.Update(model);
             await _db.SaveChangesAsync();
             //if any error about the condition of the attributes it will be stored in modelstate
