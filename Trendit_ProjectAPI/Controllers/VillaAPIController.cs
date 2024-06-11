@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Trendit_ProjectAPI.Data;
 using Trendit_ProjectAPI.Models;
 using Trendit_ProjectAPI.Models.Dto;
+using Trendit_ProjectAPI.Repository.IRepository;
 
 namespace Trendit_ProjectAPI.Controllers
 {
@@ -13,11 +14,11 @@ namespace Trendit_ProjectAPI.Controllers
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IVillaRepository _dbVilla;
         private readonly IMapper _mapper;
-        public VillaAPIController(ApplicationDbContext db,IMapper mapper)
+        public VillaAPIController(IVillaRepository dbVilla, IMapper mapper)
         {
-            _db = db;
+            _dbVilla = dbVilla;
             _mapper = mapper;
         }
 
@@ -28,7 +29,7 @@ namespace Trendit_ProjectAPI.Controllers
 
         public async Task<ActionResult<IEnumerable<VillaDTO>>> getVillas()
         {
-            IEnumerable <Villa> villaList= await _db.Villas.ToListAsync();
+            IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
             return Ok(_mapper.Map<List<VillaDTO>>(villaList));
         }
         [HttpGet("id", Name = "GetVilla")]
@@ -42,7 +43,7 @@ namespace Trendit_ProjectAPI.Controllers
             {
                 return BadRequest();
             }
-            var villa = await _db.Villas.FirstOrDefaultAsync(villa => villa.Id == id);
+            var villa = await _dbVilla.GetAsync(villa => villa.Id == id);
             if (villa == null)
             {
                 return NotFound();
@@ -58,7 +59,7 @@ namespace Trendit_ProjectAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody] VillaCreateDTO createDTO)
         {
-            if (await _db.Villas.FirstOrDefaultAsync(villa => villa.Name.ToLower() == createDTO.Name.ToLower()) != null)
+            if (await _dbVilla.GetAsync(villa => villa.Name.ToLower() == createDTO.Name.ToLower()) != null)
             /*here will get the first villa in villastore who s name equal to the one send, if no result it will
             return null so no duplication names 
             */
@@ -71,8 +72,7 @@ namespace Trendit_ProjectAPI.Controllers
                 return BadRequest(createDTO);
             }
             Villa model= _mapper.Map<Villa>(createDTO);
-            await _db.Villas.AddAsync(model);
-            await _db.SaveChangesAsync();
+            await _dbVilla.CreateAsync(model);
 
             return CreatedAtRoute("GetVilla", new { id = model.Id }, model);
             //the id because the getVilla route needs an id also 
@@ -91,13 +91,12 @@ namespace Trendit_ProjectAPI.Controllers
             {
                 return BadRequest();
             }
-            var villa =await _db.Villas.FirstOrDefaultAsync(villa => villa.Id == id);
+            var villa =await _dbVilla.GetAsync(villa => villa.Id == id);
             if (villa == null)
             {
                 return NotFound();
             }
-            _db.Villas.Remove(villa);
-            await _db.SaveChangesAsync();
+            await _dbVilla.RemoveAsync(villa);
             return NoContent();
         }
 
@@ -109,8 +108,7 @@ namespace Trendit_ProjectAPI.Controllers
                 return BadRequest();
             }
             Villa model = _mapper.Map<Villa>(updateDTO);
-            _db.Villas.Update(model);
-            await _db.SaveChangesAsync();
+            await _dbVilla.UpdateAsync(model);
 
             return NoContent();
         }
@@ -122,7 +120,8 @@ namespace Trendit_ProjectAPI.Controllers
             {
                 return BadRequest();
             }
-            var villa = await _db.Villas.AsNoTracking().FirstOrDefaultAsync(villa => villa.Id == id);
+            //tracked false because we need no tracking so there will be no error by tracking 2 same time
+            var villa = await _dbVilla.GetAsync(villa => villa.Id == id,tracked:false);
             VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
             if (villa == null)
             {
@@ -130,8 +129,7 @@ namespace Trendit_ProjectAPI.Controllers
             }
             patchDTO.ApplyTo(villaDTO, ModelState);
             Villa model = _mapper.Map<Villa>(villaDTO);
-            _db.Villas.Update(model);
-            await _db.SaveChangesAsync();
+            await _dbVilla.UpdateAsync(model);
             //if any error about the condition of the attributes it will be stored in modelstate
             if (!ModelState.IsValid)
             {
