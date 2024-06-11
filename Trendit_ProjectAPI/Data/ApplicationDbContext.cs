@@ -7,6 +7,7 @@ namespace Trendit_ProjectAPI.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Villa> Villas { get; set; }
+        public DbSet<VillaNumber> VillaNumbers { get; set; }
 
         //here we can add some data
         protected override void OnModelCreating(ModelBuilder modelBuilder)

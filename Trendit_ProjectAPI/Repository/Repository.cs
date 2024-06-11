@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Trendit_ProjectAPI.Data;
-using Trendit_ProjectAPI.Models;
 using Trendit_ProjectAPI.Repository.IRepository;
 
 namespace Trendit_ProjectAPI.Repository

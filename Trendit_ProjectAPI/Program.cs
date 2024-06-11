@@ -20,6 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //builder.Host.UseSerilog();
 //for DI
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
+
 //builder for automapping
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddControllers().AddNewtonsoftJson();

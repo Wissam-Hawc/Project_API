@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Trendit_ProjectAPI.Data;
 
@@ -11,9 +12,11 @@ using Trendit_ProjectAPI.Data;
 namespace Trendit_ProjectAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240611095947_AddVillaNumberTable")]
+    partial class AddVillaNumberTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +73,7 @@ namespace Trendit_ProjectAPI.Migrations
                         {
                             Id = 1,
                             Amenity = "",
-                            CreatedDate = new DateTime(2024, 6, 11, 13, 53, 7, 919, DateTimeKind.Local).AddTicks(6575),
+                            CreatedDate = new DateTime(2024, 6, 11, 12, 59, 47, 95, DateTimeKind.Local).AddTicks(9120),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa3.jpg",
                             Name = "Royal Villa",
@@ -83,7 +86,7 @@ namespace Trendit_ProjectAPI.Migrations
                         {
                             Id = 2,
                             Amenity = "",
-                            CreatedDate = new DateTime(2024, 6, 11, 13, 53, 7, 919, DateTimeKind.Local).AddTicks(6625),
+                            CreatedDate = new DateTime(2024, 6, 11, 12, 59, 47, 95, DateTimeKind.Local).AddTicks(9175),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa1.jpg",
                             Name = "Premium Pool Villa",
@@ -96,7 +99,7 @@ namespace Trendit_ProjectAPI.Migrations
                         {
                             Id = 3,
                             Amenity = "",
-                            CreatedDate = new DateTime(2024, 6, 11, 13, 53, 7, 919, DateTimeKind.Local).AddTicks(6629),
+                            CreatedDate = new DateTime(2024, 6, 11, 12, 59, 47, 95, DateTimeKind.Local).AddTicks(9178),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa4.jpg",
                             Name = "Luxury Pool Villa",
@@ -109,7 +112,7 @@ namespace Trendit_ProjectAPI.Migrations
                         {
                             Id = 4,
                             Amenity = "",
-                            CreatedDate = new DateTime(2024, 6, 11, 13, 53, 7, 919, DateTimeKind.Local).AddTicks(6631),
+                            CreatedDate = new DateTime(2024, 6, 11, 12, 59, 47, 95, DateTimeKind.Local).AddTicks(9181),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa5.jpg",
                             Name = "Diamond Villa",
@@ -122,7 +125,7 @@ namespace Trendit_ProjectAPI.Migrations
                         {
                             Id = 5,
                             Amenity = "",
-                            CreatedDate = new DateTime(2024, 6, 11, 13, 53, 7, 919, DateTimeKind.Local).AddTicks(6633),
+                            CreatedDate = new DateTime(2024, 6, 11, 12, 59, 47, 95, DateTimeKind.Local).AddTicks(9184),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa2.jpg",
                             Name = "Diamond Pool Villa",
@@ -148,25 +151,9 @@ namespace Trendit_ProjectAPI.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VillaID")
-                        .HasColumnType("int");
-
                     b.HasKey("VillaNo");
 
-                    b.HasIndex("VillaID");
-
                     b.ToTable("VillaNumbers");
-                });
-
-            modelBuilder.Entity("Trendit_ProjectAPI.Models.VillaNumber", b =>
-                {
-                    b.HasOne("Trendit_ProjectAPI.Models.Villa", "Villa")
-                        .WithMany()
-                        .HasForeignKey("VillaID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Villa");
                 });
 #pragma warning restore 612, 618
         }
