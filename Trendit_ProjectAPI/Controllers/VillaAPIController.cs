@@ -168,29 +168,30 @@ namespace Trendit_ProjectAPI.Controllers
             return _response;
         }
 
-        [HttpPatch("id", Name = "UpdatePartialVilla")]
-        public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
-        {
-            if (patchDTO == null || id == 0)
-            {
-                return BadRequest();
-            }
-            //tracked false because we need no tracking so there will be no error by tracking 2 same time
-            var villa = await _dbVilla.GetAsync(villa => villa.Id == id, tracked: false);
-            VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
-            if (villa == null)
-            {
-                return BadRequest();
-            }
-            patchDTO.ApplyTo(villaDTO, ModelState);
-            Villa model = _mapper.Map<Villa>(villaDTO);
-            await _dbVilla.UpdateAsync(model);
-            //if any error about the condition of the attributes it will be stored in modelstate
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            return NoContent();
-        }
+        //    [HttpPatch("id", Name = "UpdatePartialVilla")]
+        //    public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
+        //    {
+        //        if (patchDTO == null || id == 0)
+        //        {
+        //            return BadRequest();
+        //        }
+        //        //tracked false because we need no tracking so there will be no error by tracking 2 same time
+        //        var villa = await _dbVilla.GetAsync(villa => villa.Id == id, tracked: false);
+        //        VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
+        //        if (villa == null)
+        //        {
+        //            return BadRequest();
+        //        }
+        //        patchDTO.ApplyTo(villaDTO, ModelState);
+        //        Villa model = _mapper.Map<Villa>(villaDTO);
+        //        await _dbVilla.UpdateAsync(model);
+        //        //if any error about the condition of the attributes it will be stored in modelstate
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return BadRequest();
+        //        }
+        //        return NoContent();
+        //    }
+        //}
     }
 }
