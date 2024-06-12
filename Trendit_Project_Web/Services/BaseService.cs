@@ -19,7 +19,7 @@ namespace Trendit_Project_Web.Services
         {
             try
             {
-                var client = httpClient.CreateClient("");
+                var client = httpClient.CreateClient("ProjectAPI");
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
                 message.RequestUri = new Uri(apiRequest.Url);

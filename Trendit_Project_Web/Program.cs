@@ -1,4 +1,6 @@
 using Trendit_Project_Web;
+using Trendit_Project_Web.Services.IServices;
+using Trendit_Project_Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //builder for automapping
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+
+builder.Services.AddHttpClient<IVillaService, VillaService>();
+builder.Services.AddScoped<IVillaService, VillaService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
