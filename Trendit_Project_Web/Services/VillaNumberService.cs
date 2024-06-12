@@ -23,7 +23,7 @@ namespace Trendit_Project_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = villaUrl + "/api/VillaNumberAPI",
+                Url = $"{villaUrl}/api/VillaNumberAPI",
             });
         }
 
@@ -32,7 +32,7 @@ namespace Trendit_Project_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = $"{villaUrl}/api/VillaNumberAPI/id?id={id}",
+                Url = $"{villaUrl}/api/VillaNumberAPI/{id}",
             });
         }
         public Task<T> GetAllAsync<T>()
@@ -49,7 +49,7 @@ namespace Trendit_Project_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/VillaNumberAPI/id?id={id}",
+                Url = $"{villaUrl}/api/VillaNumberAPI/{id}",
             });
         }
 
@@ -59,7 +59,7 @@ namespace Trendit_Project_Web.Services
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
-                Url = $"{villaUrl}/api/VillaNumberAPI/id?id={dto.VillaNo}",
+                Url = $"{villaUrl}/api/VillaNumberAPI/{dto.VillaNo}",
             });
         }
     }
