@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Trendit_Project_Utility;
 using Trendit_Project_Web.Models;
 using Trendit_Project_Web.Models.Dto;
 using Trendit_Project_Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Trendit_Project_Web.Controllers
 {
@@ -18,6 +20,7 @@ namespace Trendit_Project_Web.Controllers
             _villaService = villaService;
             _mapper = mapper;
         }
+
         public async Task<IActionResult> IndexVilla()
         {
             List<VillaDTO> list = new();
@@ -43,9 +46,11 @@ namespace Trendit_Project_Web.Controllers
                 var response = await _villaService.CreateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["success"] = "Villa created successfully";
                     return RedirectToAction(nameof(IndexVilla));
                 }
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
         public async Task<IActionResult> UpdateVilla(int villaId)
@@ -53,6 +58,7 @@ namespace Trendit_Project_Web.Controllers
             var response = await _villaService.GetAsync<APIResponse>(villaId);
             if (response != null && response.IsSuccess)
             {
+
                 VillaDTO model = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
                 return View(_mapper.Map<VillaUpdateDTO>(model));
             }
@@ -64,15 +70,16 @@ namespace Trendit_Project_Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                TempData["success"] = "Villa updated successfully";
                 var response = await _villaService.UpdateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVilla));
                 }
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
-
         public async Task<IActionResult> DeleteVilla(int villaId)
         {
             var response = await _villaService.GetAsync<APIResponse>(villaId);
@@ -91,8 +98,10 @@ namespace Trendit_Project_Web.Controllers
             var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Villa deleted successfully";
                 return RedirectToAction(nameof(IndexVilla));
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
 
