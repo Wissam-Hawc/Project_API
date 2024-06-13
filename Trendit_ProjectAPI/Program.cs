@@ -11,6 +11,7 @@ using Trendit_ProjectAPI.Repository.IRepository;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
+builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 
 //building the logs in serilogs using file
