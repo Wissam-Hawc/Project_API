@@ -46,9 +46,9 @@ namespace Trendit_ProjectAPI.Controllers
             return _response;
         }
         [HttpGet("id", Name = "GetVilla")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
         //[ProducesResponseType(200, Type = typeof(VillaDTO))]
         public async Task<ActionResult<APIResponse>> GetVilla(int id)
         {
