@@ -2,6 +2,7 @@
 //using Serilog.Core;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +11,7 @@ using System.Text;
 using Trendit_ProjectAPI;
 using Trendit_ProjectAPI.Data;
 using Trendit_ProjectAPI.Logging;
+using Trendit_ProjectAPI.Models;
 using Trendit_ProjectAPI.Repository;
 using Trendit_ProjectAPI.Repository.IRepository;
 
@@ -86,6 +88,9 @@ builder.Services.AddSwaggerGen(options => {
         }
     });
 });
+//identity framework 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 //caching
 builder.Services.AddControllers(option =>
 {

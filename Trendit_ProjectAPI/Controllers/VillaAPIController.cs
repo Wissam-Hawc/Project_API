@@ -74,13 +74,18 @@ namespace Trendit_ProjectAPI.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Id should be greater than 0");
+                    return BadRequest(_response);
                 }
                 var villa = await _dbVilla.GetAsync(villa => villa.Id == id);
                 if (villa == null)
                 {
-                    return NotFound();
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Not Found");
+                    return NotFound(_response);
                 }
+                _response.IsSuccess = true;
                 _response.Result = _mapper.Map<VillaDTO>(villa);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
