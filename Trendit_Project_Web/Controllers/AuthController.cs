@@ -55,7 +55,7 @@ namespace Trendit_Project_Web.Controllers
             }
         }
 
-            [HttpGet]
+        [HttpGet]
         public IActionResult Register()
         {
             return View();

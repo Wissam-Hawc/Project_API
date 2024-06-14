@@ -2,6 +2,7 @@
 //using Serilog.Core;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -84,42 +85,16 @@ builder.Services.AddSwaggerGen(options => {
             new List<string>()
         }
     });
-    //options.SwaggerDoc("v1", new OpenApiInfo
-    //{
-    //    Version = "v1.0",
-    //    Title = "Magic Villa V1",
-    //    Description = "API to manage Villa",
-    //    TermsOfService = new Uri("https://example.com/terms"),
-    //    Contact = new OpenApiContact
-    //    {
-    //        Name = "Dotnetmastery",
-    //        Url = new Uri("https://dotnetmastery.com")
-    //    },
-    //    License = new OpenApiLicense
-    //    {
-    //        Name = "Example License",
-    //        Url = new Uri("https://example.com/license")
-    //    }
-    //});
-    //options.SwaggerDoc("v2", new OpenApiInfo
-    //{
-    //    Version = "v2.0",
-    //    Title = "Magic Villa V2",
-    //    Description = "API to manage Villa",
-    //    TermsOfService = new Uri("https://example.com/terms"),
-    //    Contact = new OpenApiContact
-    //    {
-    //        Name = "Dotnetmastery",
-    //        Url = new Uri("https://dotnetmastery.com")
-    //    },
-    //    License = new OpenApiLicense
-    //    {
-    //        Name = "Example License",
-    //        Url = new Uri("https://example.com/license")
-    //    }
-    //});
 });
-
+//caching
+builder.Services.AddControllers(option =>
+{
+    option.CacheProfiles.Add("Default30",
+       new CacheProfile()
+       {
+           Duration = 30
+       });
+});
 
 
 

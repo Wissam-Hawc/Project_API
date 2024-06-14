@@ -29,12 +29,29 @@ namespace Trendit_ProjectAPI.Controllers
         [HttpGet]
         // if not specified it will be HttpGet by default 
         [ProducesResponseType(StatusCodes.Status200OK)]
-
-        public async Task<ActionResult<APIResponse>> getVillas()
+        [ResponseCache(CacheProfileName = "Default30")]
+        //[Authorize]
+        public async Task<ActionResult<APIResponse>> getVillas(
+            [FromQuery(Name = "filterOccupancy")] int? occupancy, [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
         {
             try
             {
-                IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
+                IEnumerable<Villa> villaList;
+                if (occupancy > 0)
+                {
+                    villaList = await _dbVilla.GetAllAsync(u => u.Occupancy == occupancy,
+                         pageSize: pageSize,
+                        pageNumber: pageNumber);
+                }
+                else
+                {
+                    villaList = await _dbVilla.GetAllAsync(pageSize: pageSize,
+    pageNumber: pageNumber);
+                }
+                if (!string.IsNullOrEmpty(search))
+                {
+                    villaList = villaList.Where(u => u.Name.ToLower().Contains(search));
+                }
                 _response.Result = _mapper.Map<List<VillaDTO>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
